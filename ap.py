@@ -79,7 +79,7 @@ encoding_funcs = {
 # ----------------- Streamlit UI -----------------
 st.set_page_config(page_title="Binary Signal Visualizer", layout="wide")
 
-# Hide Streamlit default menu & footer
+# Hide Streamlit menu & footer
 hide_style = """
     <style>
     #MainMenu {visibility: hidden;}
@@ -89,26 +89,12 @@ hide_style = """
 """
 st.markdown(hide_style, unsafe_allow_html=True)
 
-# Theme selection
-theme = st.radio("Select Theme:", ["Dark", "Light", "Soft Gray"], horizontal=True)
+# Single Dark Theme
+bg_color = "#1e1e1e"
+plot_bg = "#2b2b2b"
+text_color = "white"
+button_bg = "#444"
 
-if theme == "Dark":
-    bg_color = "#1e1e1e"
-    plot_bg = "#2b2b2b"
-    text_color = "white"
-    button_bg = "#444"
-elif theme == "Light":
-    bg_color = "white"
-    plot_bg = "white"
-    text_color = "black"
-    button_bg = "#f0f0f0"
-else:  # Soft Gray
-    bg_color = "#dcdcdc"
-    plot_bg = "#e6e6e6"
-    text_color = "black"
-    button_bg = "#f0f0f0"
-
-# Apply theme styles
 st.markdown(
     f"""
     <style>
@@ -123,14 +109,14 @@ st.markdown(
     div.stButton > button {{
         background-color: {button_bg};
         color: {text_color} !important;
-        border: 1px solid {'white' if theme=='Dark' else 'black'};
+        border: 1px solid white;
         border-radius: 5px;
         padding: 0.4em 1em;
     }}
     div.stDownloadButton > button {{
         background-color: {button_bg};
         color: {text_color} !important;
-        border: 1px solid {'white' if theme=='Dark' else 'black'};
+        border: 1px solid white;
         border-radius: 5px;
         padding: 0.4em 1em;
     }}
@@ -181,20 +167,20 @@ if st.button("Generate Signal"):
 
         st.pyplot(fig)
 
-        # ----------------- Table Display -----------------
+        # Data Table
         df = pd.DataFrame({"Time": t, "Value": signal})
         st.dataframe(df)
 
-        # ----------------- Download Graph as PNG -----------------
+        # Download PNG
         buf = io.BytesIO()
         fig.savefig(buf, format="png", facecolor=plot_bg)
         st.download_button("📥 Download Graph as PNG", data=buf.getvalue(), file_name="signal.png", mime="image/png")
 
-        # ----------------- Download Data as CSV -----------------
+        # Download CSV
         csv = df.to_csv(index=False).encode()
         st.download_button("📥 Download Data as CSV", data=csv, file_name="signal_data.csv", mime="text/csv")
 
-        # ----------------- Compare Multiple Encodings -----------------
+        # Compare Multiple Encodings
         st.subheader("Compare Multiple Encodings")
         fig2, axes = plt.subplots(3, 3, figsize=(12, 8))
         axes = axes.flatten()
